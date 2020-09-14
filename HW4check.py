@@ -1,27 +1,10 @@
-#HW4
-#Due Date: 12/01/2019, 11:59PM 
+#Cache Project
 ########################################
 #                                      
-# Name:
-# Collaboration Statement:             
+# Name: Francesca Ansell 
+# Collaboration Statement: Assignment created by Proffessor Conejo-Lopez
 #
 ########################################
-""" 
-ord(c) = 89
-
-put (insert) 
-
-MRU (add remove from head)
-remove content in order to add new content if cache = 200
-
-LRU remove least used item (tail)
-move through whole list 
-
-evication policy is either MRU or LRU
-
-
-"""
-
 
 class ContentItem():
     def __init__(self, cid, size, header, content):
@@ -65,12 +48,8 @@ class CacheList():
     __repr__=__str__
     
     def put(self, content, evictionPolicy):
-        # YOUR CODE STARTS HERE
-        #insert function
-        #need edge cases (1) dont insert somthing greater than the size of the cache list 
-        #(2) if the number of items is 0 and cahce is less than size you can insert
-        #(3) other case where you dont have to evict anything is when the remain space is enough then you can add it (add it to the head or the tail)
-        #cases for LRU and MRU where you keep calling the evict function until you can insert (while loops calling MRU or LRU)
+        #Puts content into CacheList
+        #Uses lruEvict and mruEvict to evict list items until the new item can be inserted
         if self.maxSize < content.value.size:
             return False
         else:
@@ -99,13 +78,6 @@ class CacheList():
                         self.lruEvict()
             return True
        
-
-
-
-
-
-
-
     def find(self, cid):
         temp = self.head
         if temp.value.cid == cid:
@@ -115,75 +87,54 @@ class CacheList():
                 return temp.value
             else:
                 temp = temp.next
-
         return 'Cache miss!'
-        
 
     def mruEvict(self):
-        #dont return anything dont insert anything /////////// removes head
-        #Start 2
+        #Completes a Most Recently Used cache algorithm by removing the head
         temp = self.head
         if temp.next == None:
             self.remainingSize = self.remainingSize + temp.value.size
             temp = None
             return
-
         temp.next = self.head
         self.remainingSize = self.remainingSize + temp.value.size
         temp = None
-
-
         return
 
     
     def lruEvict(self):
-        #dont return anything dont insert anything ////// removes tail
-        #Start 2
+        #Completes a Least Recently Used cache algorithm by removing the tail
         temp= self.head
         if temp.next == None:
             self.remainingSize = self.remainingSize + temp.value.size
             temp = None
             self.tail = None
-            
             return 
-
         elif temp.next.next == None:
             temp.next = None
             self.tail = temp
             return
-
         else:
-
-
             temp = self.head
-        
             #starts at second element interates till 2nd to last element
             while temp.next.next != None:
                 temp = temp.next
-
             self.remainingSize = self.remainingSize + self.temp.value.size
-
-
             temp.next = None
             self.tail = temp
-
-        
         return
     
     def clear(self):
+        #Clears the cache list and resets the size and number of items
         current = self.head
         while current.next != None:
             current.next = None
-
         current = None
         self.head = None
         self.tail = None
         self.remainingSize = self.maxSize
         self.numItems = 0 
         return 'Cleared cache!'
-
-
-        
 
 class Cache():
     """
@@ -255,13 +206,9 @@ class Cache():
     __repr__=__str__
 
     def hashFunc(self, contentHeader):
-        #Start 1
-        #take your content header and turn it into an index
+        #Finds the hash index based on the contentheader
         ascii_ = ord(contentHeader[len(contentHeader)-1])
-
-        index = ascii_ % 200
-        
-        
+        index = ascii_ % 200    
         if index == 48:
             return 0
         elif index == 49:
@@ -270,21 +217,10 @@ class Cache():
             return 2
         else:
             return 'not sure'
-
-
-
-        # YOUR CODE STARTS HERE
     
     def insert(self, content, evictionPolicy):
-        #Start 1
-        #make it a node
-        #take in a content object 
-        #send the content objects header to the hash function
-        #index our hierachy and call that cachelist's PUT function
-        #the work of insetion is in PUT
-
+        #Inserts content into the cash list using put
         content_  = ContentNode(content)
-
         index = self.hashFunc(content.header) 
         i = self.hierarchy[index].put(content_, evictionPolicy)
         if i == True:
@@ -294,7 +230,6 @@ class Cache():
         
 
     def retrieveContent(self, content):
-        #find the index (use hashFunc) use that cach lists find function
+        #Retrieves content by finding the its index using the hashFunction and cache lists find function
         find = self.hierarchy[self.hashFunc(content.header)].find(content.cid)
-        
         return(find)
